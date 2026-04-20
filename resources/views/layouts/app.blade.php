@@ -59,6 +59,13 @@
     </main>
 
     {{-- Flash messages --}}
+    @if(session('error'))
+        <div id="flash-msg" style="position:fixed; bottom:1.5rem; right:1.5rem; background:linear-gradient(135deg,#ff444422,#ff444411); border:1px solid #ff444444; color:#ff6b6b; padding:0.75rem 1.25rem; border-radius:10px; font-size:0.9rem; z-index:999; backdrop-filter:blur(12px);">
+            {{ session('error') }}
+        </div>
+        <script>setTimeout(()=>{const el=document.getElementById('flash-msg');if(el)el.remove();},3500);</script>
+    @endif
+
     @if(session('success'))
         <div id="flash-msg" style="position:fixed; bottom:1.5rem; right:1.5rem; background:linear-gradient(135deg,#00d4ff22,#7c3aed22); border:1px solid #00d4ff44; color:#00d4ff; padding:0.75rem 1.25rem; border-radius:10px; font-size:0.9rem; z-index:999; backdrop-filter:blur(12px);">
             {{ session('success') }}
