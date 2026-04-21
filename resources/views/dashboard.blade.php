@@ -2,11 +2,11 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-6 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     {{-- Header --}}
-    <div class="mb-8">
-        <h1 class="text-2xl font-bold text-slate-100 mb-1">
+    <div class="mb-6 sm:mb-8">
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-100 mb-1">
             {{ $user->isAdmin() ? 'Admin Dashboard' : 'My Dashboard' }}
         </h1>
         <p class="text-sm text-slate-500">
@@ -37,7 +37,7 @@
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         @foreach($statCards as $card)
-        <div class="glass-card p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default group">
+        <div class="glass-card p-4 sm:p-5 flex items-center gap-3 sm:gap-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default group">
             <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
                  style="background:{{ $card['color'] }}18;">
                 <svg class="w-5 h-5" fill="none" stroke="{{ $card['color'] }}" stroke-width="1.8" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@
 
     {{-- Recent Tasks --}}
     <div class="glass-card overflow-hidden">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+        <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-800">
             <h2 class="font-semibold text-slate-200 text-sm">
                 {{ $user->isAdmin() ? 'Recent Tasks' : 'My Recent Tasks' }}
             </h2>
@@ -77,7 +77,7 @@
         @else
         <div class="divide-y divide-slate-800">
             @foreach($recentTasks as $task)
-            <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-white/[0.02] transition-colors">
+            <div class="flex items-center gap-3 px-4 sm:px-6 py-3.5 hover:bg-white/[0.02] transition-colors">
                 @php
                     $dot = match($task->priority) {
                         'urgent' => 'bg-red-400',

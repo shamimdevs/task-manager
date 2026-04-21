@@ -2,15 +2,15 @@
 @section('title', 'User Management')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-6 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-slate-100">User Management</h1>
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-100">User Management</h1>
             <p class="text-sm text-slate-500 mt-0.5">{{ $users->total() }} total users</p>
         </div>
-        <a href="{{ route('admin.users.create') }}" class="btn-primary text-sm no-underline">+ Create User</a>
+        <a href="{{ route('admin.users.create') }}" class="btn-primary text-sm no-underline flex-shrink-0">+ Create User</a>
     </div>
 
     {{-- Search bar --}}

@@ -2,7 +2,7 @@
 @section('title', 'Create Task')
 
 @section('content')
-<div class="max-w-2xl mx-auto px-6 py-8">
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     <div class="mb-8">
         <a href="{{ route('admin.tasks.index') }}"
@@ -56,7 +56,7 @@
                 </div>
 
                 {{-- Priority + Status --}}
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-400 mb-1.5">Priority</label>
                         <select name="priority" class="input-dark w-full cursor-pointer">
@@ -76,7 +76,7 @@
                 </div>
 
                 {{-- Due Date + Order --}}
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-400 mb-1.5">Due Date</label>
                         <input type="date" name="due_date" value="{{ old('due_date') }}"

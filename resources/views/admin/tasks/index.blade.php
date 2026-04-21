@@ -2,15 +2,15 @@
 @section('title', 'Task Management')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-6 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-slate-100">Task Management</h1>
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-100">Task Management</h1>
             <p class="text-sm text-slate-500 mt-0.5">{{ $tasks->total() }} total tasks</p>
         </div>
-        <a href="{{ route('admin.tasks.create') }}" class="btn-primary text-sm no-underline">+ Create Task</a>
+        <a href="{{ route('admin.tasks.create') }}" class="btn-primary text-sm no-underline flex-shrink-0">+ Create Task</a>
     </div>
 
     {{-- Search + Filters --}}
@@ -58,7 +58,7 @@
 
     {{-- Task list --}}
     @if($tasks->isEmpty())
-    <div class="glass-card p-16 text-center">
+    <div class="glass-card px-6 py-12 sm:p-16 text-center">
         <div class="w-14 h-14 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center mx-auto mb-4">
             <svg class="w-7 h-7 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2"/>
@@ -75,7 +75,7 @@
     @else
     <div class="flex flex-col gap-3">
         @foreach($tasks as $task)
-        <div class="glass-card p-5 hover:border-slate-600 transition-all duration-200 overflow-hidden">
+        <div class="glass-card p-4 sm:p-5 hover:border-slate-600 transition-all duration-200 overflow-hidden">
             <div class="flex items-start gap-4">
 
                 {{-- Priority dot --}}
@@ -129,7 +129,7 @@
                 </div>
 
                 {{-- Badges + Actions --}}
-                <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                <div class="flex sm:flex-col items-center sm:items-end gap-2 flex-shrink-0 flex-wrap">
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-semibold px-2 py-0.5 rounded-full border {{ \App\Models\Task::priorityColor($task->priority) }}">
                             {{ ucfirst($task->priority) }}

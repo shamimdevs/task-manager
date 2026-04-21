@@ -2,7 +2,7 @@
 @section('title', 'User Report — ' . $user->name)
 
 @section('content')
-<div class="max-w-5xl mx-auto px-6 py-8">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     {{-- Back + header --}}
     <div class="mb-8">
@@ -10,15 +10,15 @@
            class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline mb-3">
             ← Back to Users
         </a>
-        <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-slate-100">User Report</h1>
-            <span class="text-xs text-slate-500">Generated {{ now()->format('d M Y, H:i') }}</span>
+        <div class="flex flex-wrap items-start justify-between gap-2">
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-100">User Report</h1>
+            <span class="text-xs text-slate-500 mt-1">Generated {{ now()->format('d M Y, H:i') }}</span>
         </div>
     </div>
 
     {{-- Profile card --}}
-    <div class="glass-card p-6 mb-6">
-        <div class="flex items-center gap-5 flex-wrap">
+    <div class="glass-card p-4 sm:p-6 mb-6">
+        <div class="flex items-center gap-4 flex-wrap">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-3xl font-bold text-white flex-shrink-0 overflow-hidden border-2 border-slate-700">
                 @if($user->profile_image)
                     <img src="{{ Storage::url($user->profile_image) }}" class="w-full h-full object-cover">
@@ -98,7 +98,7 @@
 
     {{-- Task list --}}
     <div class="glass-card overflow-hidden p-0">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+        <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-800">
             <h3 class="font-semibold text-slate-200 text-sm">Assigned Tasks</h3>
             <span class="text-xs text-slate-500">{{ $tasks->count() }} tasks</span>
         </div>
@@ -108,7 +108,7 @@
         @else
         <div class="divide-y divide-slate-800">
             @foreach($tasks as $task)
-            <div class="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.02] transition-colors">
+            <div class="flex items-center gap-3 px-4 sm:px-6 py-4 hover:bg-white/[0.02] transition-colors">
 
                 {{-- Priority stripe --}}
                 @php

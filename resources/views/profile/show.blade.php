@@ -3,66 +3,57 @@
 @section('title', 'My Profile')
 
 @section('content')
-<div style="max-width:720px; margin:0 auto; padding:2rem 1.5rem;">
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
-    <h1 style="font-size:1.75rem; font-weight:700; color:#e2e8f0; margin:0 0 2rem;">My Profile</h1>
+    <h1 class="text-xl sm:text-2xl font-bold text-slate-100 mb-6">My Profile</h1>
 
     {{-- Profile card --}}
-    <div class="glass-card" style="margin-bottom:1.5rem;">
-        <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;" class="p-4">
+    <div class="glass-card p-4 sm:p-6 mb-4">
+        <div class="flex flex-wrap items-center gap-4">
             {{-- Avatar --}}
-            <div
-                style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#00d4ff,#7c3aed); display:flex; align-items:center; justify-content:center; font-size:1.75rem; font-weight:700; color:#fff; flex-shrink:0; overflow:hidden; border:2px solid #1e2433;">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-2xl sm:text-3xl font-bold text-white flex-shrink-0 overflow-hidden border-2 border-slate-700"
+                style="background:linear-gradient(135deg,#00d4ff,#7c3aed);">
                 @if($user->profile_image)
-                <img src="{{ Storage::url($user->profile_image) }}" alt="{{ $user->name }}"
-                    style="width:100%; height:100%; object-fit:cover;">
+                    <img src="{{ Storage::url($user->profile_image) }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
                 @else
-                {{ strtoupper(substr($user->name, 0, 1)) }}
+                    {{ strtoupper(substr($user->name, 0, 1)) }}
                 @endif
             </div>
-            <div style="flex:1; min-width:0;">
-                <h2
-                    style="font-size:1.2rem; font-weight:700; color:#e2e8f0; margin:0 0 0.2rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                    {{ $user->name }}</h2>
+            <div class="flex-1 min-w-0">
+                <h2 class="text-base sm:text-lg font-bold text-slate-100 truncate">{{ $user->name }}</h2>
                 @if($user->designation)
-                <p style="color:#00d4ff; font-size:0.875rem; margin:0 0 0.4rem; font-weight:500;">
-                    {{ $user->designation }}</p>
+                    <p class="text-cyan-400 text-sm font-medium mt-0.5">{{ $user->designation }}</p>
                 @endif
-                <p style="color:#8b9ab0; font-size:0.85rem; margin:0 0 0.5rem;">{{ $user->email }}</p>
-                <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                <p class="text-slate-500 text-sm truncate">{{ $user->email }}</p>
+                <div class="flex flex-wrap items-center gap-2 mt-2">
                     @if($user->isAdmin())
-                    <span
-                        style="font-size:0.72rem; font-weight:600; color:#7c3aed; background:rgba(124,58,237,0.15); padding:0.2rem 0.6rem; border-radius:6px; border:1px solid rgba(124,58,237,0.3);">Admin</span>
+                        <span class="text-xs font-semibold text-violet-400 bg-violet-400/15 border border-violet-400/30 px-2.5 py-0.5 rounded-full">Admin</span>
                     @else
-                    <span
-                        style="font-size:0.72rem; font-weight:600; color:#8b9ab0; background:rgba(139,154,176,0.1); padding:0.2rem 0.6rem; border-radius:6px; border:1px solid rgba(139,154,176,0.2);">User</span>
+                        <span class="text-xs font-semibold text-slate-400 bg-slate-400/10 border border-slate-400/20 px-2.5 py-0.5 rounded-full">User</span>
                     @endif
                     @if($user->isActive())
-                    <span
-                        style="font-size:0.72rem; font-weight:600; color:#22c55e; background:rgba(34,197,94,0.12); padding:0.2rem 0.6rem; border-radius:6px; border:1px solid rgba(34,197,94,0.25); display:inline-flex; align-items:center; gap:0.3rem;">
-                        <span style="width:5px; height:5px; border-radius:50%; background:#22c55e;"></span>Active
-                    </span>
+                        <span class="text-xs font-semibold text-emerald-400 bg-emerald-400/12 border border-emerald-400/25 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Active
+                        </span>
                     @endif
                 </div>
             </div>
-            <div style="text-align:right; color:#8b9ab0; font-size:0.8rem; flex-shrink:0;">
-                <p style="margin:0;">Member since</p>
-                <p style="margin:0.1rem 0 0; color:#e2e8f0; font-weight:500;">{{ $user->created_at->format('d M Y') }}
-                </p>
+            <div class="text-right text-slate-500 text-xs flex-shrink-0">
+                <p>Member since</p>
+                <p class="text-slate-200 font-medium mt-0.5">{{ $user->created_at->format('d M Y') }}</p>
             </div>
         </div>
     </div>
 
     {{-- Edit form --}}
-    <div class="glass-card p-4">
-        <h3 style="font-size:1rem; font-weight:600; color:#e2e8f0; margin:0 0 1.5rem;">Edit Profile</h3>
+    <div class="glass-card p-4 sm:p-6">
+        <h3 class="text-sm font-semibold text-slate-200 mb-5">Edit Profile</h3>
 
         @if($errors->any())
-        <div
-            style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:1rem; margin-bottom:1.5rem;">
-            <ul style="margin:0; padding-left:1.25rem; color:#f87171; font-size:0.875rem;">
+        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-5">
+            <ul class="text-sm text-red-400 space-y-1 pl-4 list-disc">
                 @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
+                    <li>{{ $error }}</li>
                 @endforeach
             </ul>
         </div>
@@ -71,124 +62,96 @@
         <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
             @csrf @method('PUT')
 
-            <div style="display:flex; flex-direction:column; gap:1.25rem;">
+            <div class="flex flex-col gap-5">
 
                 {{-- Photo upload --}}
-                <div style="display:flex; align-items:center; gap:1.25rem;">
-                    <div
-                        style="width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#00d4ff,#7c3aed); display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:700; color:#fff; flex-shrink:0; overflow:hidden; border:2px solid #1e2433;">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white flex-shrink-0 overflow-hidden border-2 border-slate-700"
+                        style="background:linear-gradient(135deg,#00d4ff,#7c3aed);">
                         @if($user->profile_image)
-                        <img id="avatarImg" src="{{ Storage::url($user->profile_image) }}" alt=""
-                            style="width:100%; height:100%; object-fit:cover;">
+                            <img id="avatarImg" src="{{ Storage::url($user->profile_image) }}" alt="" class="w-full h-full object-cover">
                         @else
-                        <span id="avatarInitial">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
-                        <img id="avatarImg" src="" alt=""
-                            style="display:none; width:100%; height:100%; object-fit:cover;">
+                            <span id="avatarInitial">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                            <img id="avatarImg" src="" alt="" class="hidden w-full h-full object-cover">
                         @endif
                     </div>
                     <div>
-                        <label
-                            style="cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem; font-size:0.8rem; color:#00d4ff; border:1px solid rgba(0,212,255,0.3); padding:0.4rem 0.9rem; border-radius:6px; background:rgba(0,212,255,0.06); transition:all 0.2s;"
-                            onmouseover="this.style.background='rgba(0,212,255,0.12)'"
-                            onmouseout="this.style.background='rgba(0,212,255,0.06)'">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="17 8 12 3 7 8" />
-                                <line x1="12" y1="3" x2="12" y2="15" />
+                        <label class="cursor-pointer inline-flex items-center gap-1.5 text-xs text-cyan-400 border border-cyan-400/30 px-3 py-1.5 rounded-lg bg-cyan-400/6 hover:bg-cyan-400/12 transition-all">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
                             </svg>
                             Change Photo
                             <input type="file" name="profile_image" accept="image/jpg,image/jpeg,image/png,image/webp"
-                                style="display:none;" onchange="previewImage(this)">
+                                class="hidden" onchange="previewImage(this)">
                         </label>
-                        <p style="color:#8b9ab0; font-size:0.75rem; margin:0.35rem 0 0;">JPG, PNG, WebP — max 2MB</p>
+                        <p class="text-xs text-slate-500 mt-1.5">JPG, PNG, WebP — max 2MB</p>
                     </div>
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                {{-- Name + Email --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label
-                            style="display:block; font-size:0.875rem; font-weight:500; color:#8b9ab0; margin-bottom:0.5rem;">Full
-                            Name</label>
-                        <input type="text" name="name" value="{{ old('name', $user->name) }}" required
-                            class="input-dark" style="width:100%; box-sizing:border-box;">
+                        <label class="block text-sm font-medium text-slate-400 mb-1.5">Full Name</label>
+                        <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="input-dark w-full">
                     </div>
                     <div>
-                        <label
-                            style="display:block; font-size:0.875rem; font-weight:500; color:#8b9ab0; margin-bottom:0.5rem;">Email
-                            Address</label>
-                        <input type="email" name="email" value="{{ old('email', $user->email) }}" required
-                            class="input-dark" style="width:100%; box-sizing:border-box;">
+                        <label class="block text-sm font-medium text-slate-400 mb-1.5">Email Address</label>
+                        <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="input-dark w-full">
                     </div>
                 </div>
 
                 <div>
-                    <label
-                        style="display:block; font-size:0.875rem; font-weight:500; color:#8b9ab0; margin-bottom:0.5rem;">Designation</label>
+                    <label class="block text-sm font-medium text-slate-400 mb-1.5">Designation</label>
                     <input type="text" name="designation" value="{{ old('designation', $user->designation) }}"
-                        class="input-dark" style="width:100%; box-sizing:border-box;"
-                        placeholder="e.g. Software Engineer">
+                        class="input-dark w-full" placeholder="e.g. Software Engineer">
                 </div>
 
-                <div style="border-top:1px solid #1e2433; padding-top:1.25rem;">
-                    <h4 style="font-size:0.9rem; font-weight:600; color:#e2e8f0; margin:0 0 0.5rem;">Change Password
-                    </h4>
-                    <p style="color:#8b9ab0; font-size:0.8rem; margin:0 0 1rem;">Leave blank to keep your current
-                        password.</p>
+                <div class="border-t border-slate-800 pt-5">
+                    <h4 class="text-sm font-semibold text-slate-200 mb-1">Change Password</h4>
+                    <p class="text-xs text-slate-500 mb-4">Leave blank to keep your current password.</p>
 
-                    <div style="display:flex; flex-direction:column; gap:1rem;">
+                    <div class="flex flex-col gap-4">
                         <div>
-                            <label
-                                style="display:block; font-size:0.875rem; font-weight:500; color:#8b9ab0; margin-bottom:0.5rem;">Current
-                                Password</label>
-                            <div style="position:relative;">
-                                <input type="password" name="current_password" id="current_password" class="input-dark"
-                                    style="width:100%; box-sizing:border-box; padding-right:3rem;"
+                            <label class="block text-sm font-medium text-slate-400 mb-1.5">Current Password</label>
+                            <div class="relative">
+                                <input type="password" name="current_password" id="current_password" class="input-dark w-full pr-10"
                                     placeholder="Enter current password">
                                 <button type="button" onclick="togglePwd('current_password','eye0')"
-                                    style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#8b9ab0; cursor:pointer; padding:0;">
-                                    <svg id="eye0" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="2">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                        <circle cx="12" cy="12" r="3" />
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 bg-transparent border-none cursor-pointer p-0 flex items-center">
+                                    <svg id="eye0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
                                     </svg>
                                 </button>
                             </div>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label
-                                    style="display:block; font-size:0.875rem; font-weight:500; color:#8b9ab0; margin-bottom:0.5rem;">New
-                                    Password</label>
-                                <div style="position:relative;">
-                                    <input type="password" name="password" id="password" class="input-dark"
-                                        style="width:100%; box-sizing:border-box; padding-right:3rem;"
+                                <label class="block text-sm font-medium text-slate-400 mb-1.5">New Password</label>
+                                <div class="relative">
+                                    <input type="password" name="password" id="password" class="input-dark w-full pr-10"
                                         placeholder="Min. 6 characters">
                                     <button type="button" onclick="togglePwd('password','eye1')"
-                                        style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#8b9ab0; cursor:pointer; padding:0;">
-                                        <svg id="eye1" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                            <circle cx="12" cy="12" r="3" />
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 bg-transparent border-none cursor-pointer p-0 flex items-center">
+                                        <svg id="eye1" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                            <circle cx="12" cy="12" r="3"/>
                                         </svg>
                                     </button>
                                 </div>
                             </div>
                             <div>
-                                <label
-                                    style="display:block; font-size:0.875rem; font-weight:500; color:#8b9ab0; margin-bottom:0.5rem;">Confirm
-                                    Password</label>
-                                <div style="position:relative;">
+                                <label class="block text-sm font-medium text-slate-400 mb-1.5">Confirm Password</label>
+                                <div class="relative">
                                     <input type="password" name="password_confirmation" id="password_confirmation"
-                                        class="input-dark"
-                                        style="width:100%; box-sizing:border-box; padding-right:3rem;"
-                                        placeholder="Repeat new password">
+                                        class="input-dark w-full pr-10" placeholder="Repeat new password">
                                     <button type="button" onclick="togglePwd('password_confirmation','eye2')"
-                                        style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#8b9ab0; cursor:pointer; padding:0;">
-                                        <svg id="eye2" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                            <circle cx="12" cy="12" r="3" />
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 bg-transparent border-none cursor-pointer p-0 flex items-center">
+                                        <svg id="eye2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                            <circle cx="12" cy="12" r="3"/>
                                         </svg>
                                     </button>
                                 </div>
@@ -197,9 +160,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary" style="width:100%; margin-top:0.5rem;">
-                    Save Changes
-                </button>
+                <button type="submit" class="btn-primary w-full mt-1">Save Changes</button>
             </div>
         </form>
     </div>
@@ -220,9 +181,9 @@ function previewImage(input) {
         reader.onload = e => {
             const img = document.getElementById('avatarImg');
             img.src = e.target.result;
-            img.style.display = 'block';
+            img.classList.remove('hidden');
             const initial = document.getElementById('avatarInitial');
-            if (initial) initial.style.display = 'none';
+            if (initial) initial.classList.add('hidden');
         };
         reader.readAsDataURL(input.files[0]);
     }

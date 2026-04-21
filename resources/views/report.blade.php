@@ -2,18 +2,18 @@
 @section('title', 'My Report')
 
 @section('content')
-<div class="max-w-5xl mx-auto px-6 py-8">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-8">
+    <div class="mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-slate-100">My Report</h1>
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-100">My Report</h1>
             <p class="text-sm text-slate-500 mt-0.5">Generated {{ now()->format('d M Y, H:i') }}</p>
         </div>
     </div>
 
     {{-- ── PROFILE SUMMARY ── --}}
-    <div class="glass-card p-6 mb-6">
+    <div class="glass-card p-4 sm:p-6 mb-6">
         <div class="flex items-center gap-5 flex-wrap">
             <div class="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0 overflow-hidden border-2 border-slate-700">
                 @if($user->profile_image)
@@ -134,14 +134,14 @@
     @foreach($sections as $status => $meta)
     @if(isset($tasksByStatus[$status]) && $tasksByStatus[$status]->count())
     <div class="glass-card overflow-hidden p-0 mb-4">
-        <div class="flex items-center gap-3 px-6 py-3.5 border-b border-slate-800">
+        <div class="flex items-center gap-3 px-4 sm:px-6 py-3.5 border-b border-slate-800">
             <span class="w-2.5 h-2.5 rounded-full {{ $meta['dot'] }}"></span>
             <h3 class="text-sm font-semibold {{ $meta['color'] }}">{{ $meta['label'] }}</h3>
             <span class="text-xs text-slate-500 ml-auto">{{ $tasksByStatus[$status]->count() }} tasks</span>
         </div>
         <div class="divide-y divide-slate-800">
             @foreach($tasksByStatus[$status] as $task)
-            <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-white/[0.02] transition-colors border-l-2 {{ $meta['border'] }}">
+            <div class="flex items-center gap-3 px-4 sm:px-6 py-3.5 hover:bg-white/[0.02] transition-colors border-l-2 {{ $meta['border'] }}">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium {{ $status==='completed'?'line-through text-slate-500':'text-slate-200' }} truncate">{{ $task->title }}</p>
                     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-0.5">

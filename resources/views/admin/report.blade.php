@@ -2,12 +2,12 @@
 @section('title', 'Admin Report')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-6 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-slate-100">Admin Report</h1>
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-100">Admin Report</h1>
             <p class="text-sm text-slate-500 mt-0.5">Generated {{ now()->format('d M Y, H:i') }}</p>
         </div>
     </div>
@@ -45,7 +45,7 @@
     </div>
 
     {{-- ── OVERALL COMPLETION BAR ── --}}
-    <div class="glass-card p-6 mb-6">
+    <div class="glass-card p-4 sm:p-6 mb-6">
         <div class="flex items-center justify-between mb-3">
             <span class="text-sm font-semibold text-slate-200">Overall Completion Rate</span>
             <span class="text-xl font-bold text-emerald-400">{{ $completionRate }}%</span>
@@ -80,7 +80,7 @@
     </div>
 
     {{-- ── PRIORITY BREAKDOWN ── --}}
-    <div class="glass-card p-6 mb-6">
+    <div class="glass-card p-4 sm:p-6 mb-6">
         <h2 class="text-sm font-semibold text-slate-200 mb-4">Task Priority Breakdown</h2>
         @php
         $priorityMeta = [
@@ -113,7 +113,7 @@
 
     {{-- ── PER-USER BREAKDOWN ── --}}
     <div class="glass-card overflow-hidden p-0 mb-6">
-        <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="px-4 sm:px-6 py-4 border-b border-slate-800 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-slate-200">User-wise Task Breakdown</h2>
             <span class="text-xs text-slate-500">{{ $userStats->count() }} active users</span>
         </div>
@@ -223,14 +223,14 @@
 
     {{-- ── RECENT TASKS ── --}}
     <div class="glass-card overflow-hidden p-0">
-        <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="px-4 sm:px-6 py-4 border-b border-slate-800 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-slate-200">Recent Tasks</h2>
             <a href="{{ route('admin.tasks.index') }}"
                 class="text-xs text-cyan-400 hover:text-cyan-300 transition-colors no-underline">View all →</a>
         </div>
         <div class="divide-y divide-slate-800">
             @forelse($recentTasks as $task)
-            <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-white/[0.02] transition-colors">
+            <div class="flex items-center gap-3 px-4 sm:px-6 py-3.5 hover:bg-white/[0.02] transition-colors">
                 @php $dot = match($task->priority){
                 'urgent'=>'bg-red-400','high'=>'bg-orange-400','medium'=>'bg-yellow-400',default=>'bg-slate-600' };
                 @endphp
