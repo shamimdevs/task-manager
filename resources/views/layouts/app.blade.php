@@ -218,6 +218,45 @@
         </div>
     </nav>
 
+    {{-- Global Loading Overlay --}}
+    <div id="loadingOverlay"
+         style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(6,8,16,0.75); backdrop-filter:blur(6px);
+                align-items:center; justify-content:center; flex-direction:column; gap:1.25rem;">
+        {{-- Spinner --}}
+        <div style="position:relative; width:56px; height:56px;">
+            <svg style="width:56px; height:56px; animation:spin 1s linear infinite;" viewBox="0 0 56 56" fill="none">
+                <circle cx="28" cy="28" r="24" stroke="#1e2433" stroke-width="4"/>
+                <path d="M28 4 a24 24 0 0 1 24 24" stroke="url(#lg)" stroke-width="4" stroke-linecap="round"/>
+                <defs>
+                    <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#00d4ff"/>
+                        <stop offset="100%" stop-color="#7c3aed"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="url(#lg2)" stroke-width="2.5">
+                    <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    <defs>
+                        <linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00d4ff"/>
+                            <stop offset="100%" stop-color="#7c3aed"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+        {{-- Text --}}
+        <div style="text-align:center;">
+            <p id="loadingText" style="color:#e2e8f0; font-size:0.95rem; font-weight:600; margin:0 0 0.3rem;">Processing…</p>
+            <p style="color:#8b9ab0; font-size:0.78rem; margin:0;">Please wait a moment</p>
+        </div>
+    </div>
+
+    <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+
     {{-- Main Content --}}
     <main>
         @yield('content')
@@ -260,6 +299,51 @@
         const pm = document.getElementById('profileMenu');
         if (dd && pm && !pm.contains(e.target)) dd.classList.add('hidden');
     });
+
+    // ── Global Form Loading Overlay ──
+    (function () {
+        const overlay  = document.getElementById('loadingOverlay');
+        const loadText = document.getElementById('loadingText');
+
+        function showLoader(msg) {
+            loadText.textContent = msg || 'Processing…';
+            overlay.style.display = 'flex';
+        }
+
+        // Detect form context for custom messages
+        function getMessage(form) {
+            const action  = (form.action  || '').toLowerCase();
+            const method  = (form.querySelector('[name="_method"]')?.value || form.method || '').toLowerCase();
+            const btnText = (form.querySelector('[type="submit"]')?.textContent || '').trim().toLowerCase();
+
+            if (action.includes('login'))    return 'Signing in…';
+            if (action.includes('register')) return 'Creating account…';
+            if (action.includes('logout'))   return 'Signing out…';
+            if (action.includes('password')) return 'Sending reset link…';
+            if (method === 'delete')         return 'Deleting…';
+            if (btnText.includes('update') || method === 'put' || method === 'patch') return 'Saving changes…';
+            if (btnText.includes('create') || action.includes('store')) return 'Creating…';
+            return 'Processing…';
+        }
+
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+
+            // If form has onsubmit confirm() and it was already cancelled, do nothing
+            // We hook AFTER the native confirm ran (event reaches here only if not prevented)
+            if (e.defaultPrevented) return;
+
+            // Don't show loader for search/filter forms (GET method, no _method spoofing)
+            if (form.method.toLowerCase() === 'get') return;
+
+            showLoader(getMessage(form));
+        }, true); // capture phase so it fires before inline onsubmit
+
+        // Hide loader on browser back (page shown from cache)
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) overlay.style.display = 'none';
+        });
+    })();
     </script>
 
     @stack('scripts')
