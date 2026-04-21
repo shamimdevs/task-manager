@@ -35,9 +35,18 @@
                         Dashboard
                     </a>
                     @if(auth()->user()->isAdmin())
+                    <a href="{{ route('admin.tasks.index') }}" style="color:#8b9ab0; text-decoration:none; font-size:0.9rem; transition:color 0.2s;"
+                       onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color='#8b9ab0'">
+                        Tasks
+                    </a>
                     <a href="{{ route('admin.users.index') }}" style="color:#8b9ab0; text-decoration:none; font-size:0.9rem; transition:color 0.2s;"
                        onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color='#8b9ab0'">
                         Users
+                    </a>
+                    @else
+                    <a href="{{ route('my-tasks.index') }}" style="color:#8b9ab0; text-decoration:none; font-size:0.9rem; transition:color 0.2s;"
+                       onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color='#8b9ab0'">
+                        My Tasks
                     </a>
                     @endif
 
