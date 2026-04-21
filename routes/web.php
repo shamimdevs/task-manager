@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MyTaskController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,8 @@ Route::middleware('auth.custom')->group(function () {
 
     Route::get('/my-tasks', [MyTaskController::class, 'index'])->name('my-tasks.index');
     Route::patch('/my-tasks/{task}/status', [MyTaskController::class, 'updateStatus'])->name('my-tasks.update-status');
+
+    Route::get('/report', [ReportController::class, 'userReport'])->name('report');
 });
 
 // ── Admin only ────────────────────────────────────────────────
@@ -39,4 +42,5 @@ Route::middleware(['auth.custom', 'admin'])->prefix('admin')->name('admin.')->gr
     Route::get('users/{user}/report', [UserController::class, 'report'])->name('users.report');
 
     Route::resource('tasks', TaskController::class)->except(['show']);
+    Route::get('report', [ReportController::class, 'adminReport'])->name('report');
 });
