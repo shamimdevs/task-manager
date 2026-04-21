@@ -10,13 +10,43 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $users = User::orderBy('created_at', 'desc')->get();
-            return view('admin.users.index', compact('users'));
+            $search = $request->input('search', '');
+
+            $users = User::when($search, function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('designation', 'like', "%{$search}%");
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate(15)
+                ->withQueryString();
+
+            return view('admin.users.index', compact('users', 'search'));
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to load users: ' . $e->getMessage());
+        }
+    }
+
+    public function report(User $user)
+    {
+        try {
+            $tasks = $user->assignedTasks()->with('creator')->orderByDesc('created_at')->get();
+
+            $taskStats = [
+                'total'       => $tasks->count(),
+                'pending'     => $tasks->where('status', 'pending')->count(),
+                'in_progress' => $tasks->where('status', 'in_progress')->count(),
+                'completed'   => $tasks->where('status', 'completed')->count(),
+                'cancelled'   => $tasks->where('status', 'cancelled')->count(),
+                'overdue'     => $tasks->filter(fn($t) => $t->isOverdue())->count(),
+            ];
+
+            return view('admin.users.report', compact('user', 'tasks', 'taskStats'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to load report: ' . $e->getMessage());
         }
     }
 

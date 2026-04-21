@@ -36,6 +36,7 @@ Route::middleware('auth.custom')->group(function () {
 Route::middleware(['auth.custom', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('users', UserController::class)->except(['show']);
     Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::get('users/{user}/report', [UserController::class, 'report'])->name('users.report');
 
     Route::resource('tasks', TaskController::class)->except(['show']);
 });

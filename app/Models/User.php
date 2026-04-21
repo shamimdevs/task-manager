@@ -31,4 +31,14 @@ class User extends Authenticatable
     {
         return $this->status === 'active';
     }
+
+    public function assignedTasks()
+    {
+        return $this->hasMany(Task::class, 'assigned_to');
+    }
+
+    public function createdTasks()
+    {
+        return $this->hasMany(Task::class, 'created_by');
+    }
 }

@@ -11,14 +11,27 @@ use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
+            $search   = $request->input('search', '');
+            $status   = $request->input('status', '');
+            $priority = $request->input('priority', '');
+
             $tasks = Task::with(['creator', 'assignee'])
+                ->when($search, function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%")
+                      ->orWhereHas('assignee', fn($u) => $u->where('name', 'like', "%{$search}%"));
+                })
+                ->when($status, fn($q) => $q->where('status', $status))
+                ->when($priority, fn($q) => $q->where('priority', $priority))
                 ->orderBy('order')
                 ->orderByDesc('created_at')
-                ->get();
-            return view('admin.tasks.index', compact('tasks'));
+                ->paginate(10)
+                ->withQueryString();
+
+            return view('admin.tasks.index', compact('tasks', 'search', 'status', 'priority'));
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to load tasks: ' . $e->getMessage());
         }
