@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MyTaskController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TaskController;
@@ -19,6 +20,11 @@ Route::middleware('guest.custom')->group(function () {
 
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.forgot');
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.forgot.send');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset.form');
+    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.reset');
 });
 
 // ── Authenticated ─────────────────────────────────────────────

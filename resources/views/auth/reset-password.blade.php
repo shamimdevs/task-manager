@@ -1,17 +1,13 @@
 @extends('layouts.app')
-
-@section('title', 'Login')
+@section('title', 'Reset Password')
 
 @section('content')
 <div style="min-height:calc(100vh - 64px); display:flex; align-items:center; justify-content:center; padding:2rem 1rem;">
 
-    {{-- Glow blobs --}}
     <div style="position:fixed; top:20%; left:15%; width:350px; height:350px; background:radial-gradient(circle,#00d4ff0d,transparent 70%); pointer-events:none;"></div>
     <div style="position:fixed; bottom:20%; right:15%; width:300px; height:300px; background:radial-gradient(circle,#7c3aed0d,transparent 70%); pointer-events:none;"></div>
 
     <div style="width:100%; max-width:420px;">
-
-        {{-- Card --}}
         <div class="glass-card" style="padding:2.5rem;">
 
             {{-- Header --}}
@@ -21,8 +17,8 @@
                         <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                     </svg>
                 </div>
-                <h1 style="font-size:1.6rem; font-weight:700; color:#f1f5f9; margin:0 0 0.4rem;">Welcome back</h1>
-                <p style="color:#8b9ab0; font-size:0.9rem; margin:0;">Sign in to your account</p>
+                <h1 style="font-size:1.6rem; font-weight:700; color:#f1f5f9; margin:0 0 0.4rem;">Set New Password</h1>
+                <p style="color:#8b9ab0; font-size:0.9rem; margin:0;">Choose a strong password for your account.</p>
             </div>
 
             {{-- Error --}}
@@ -32,61 +28,57 @@
             </div>
             @endif
 
+            @if(session('error'))
+            <div style="background:#ff444411; border:1px solid #ff444433; color:#ff6b6b; padding:0.75rem 1rem; border-radius:8px; font-size:0.875rem; margin-bottom:1.25rem;">
+                {{ session('error') }}
+            </div>
+            @endif
+
             {{-- Form --}}
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('password.reset') }}">
                 @csrf
+                <input type="hidden" name="token" value="{{ $token }}">
+                <input type="hidden" name="email" value="{{ $email }}">
 
                 <div style="margin-bottom:1.25rem;">
-                    <label style="display:block; font-size:0.85rem; font-weight:500; color:#cbd5e1; margin-bottom:0.4rem;">Email address</label>
-                    <input type="email" name="email" value="{{ old('email') }}" placeholder="you@example.com"
-                           class="input-dark" required autofocus>
+                    <label style="display:block; font-size:0.85rem; font-weight:500; color:#cbd5e1; margin-bottom:0.4rem;">New Password</label>
+                    <div style="position:relative;">
+                        <input type="password" name="password" id="pass1" placeholder="••••••••"
+                               class="input-dark" required style="padding-right:2.75rem;">
+                        <button type="button" onclick="togglePassword('pass1','eye1')"
+                                style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#8b9ab0; padding:0; display:flex; align-items:center;" tabindex="-1">
+                            <svg id="eye1" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p style="margin:0.35rem 0 0; font-size:0.78rem; color:#6b7280;">Minimum 6 characters</p>
                 </div>
 
-                <div style="margin-bottom:0.5rem;">
-                    <label style="display:block; font-size:0.85rem; font-weight:500; color:#cbd5e1; margin-bottom:0.4rem;">Password</label>
+                <div style="margin-bottom:1.75rem;">
+                    <label style="display:block; font-size:0.85rem; font-weight:500; color:#cbd5e1; margin-bottom:0.4rem;">Confirm New Password</label>
                     <div style="position:relative;">
-                        <input type="password" name="password" id="login-password" placeholder="••••••••"
+                        <input type="password" name="password_confirmation" id="pass2" placeholder="••••••••"
                                class="input-dark" required style="padding-right:2.75rem;">
-                        <button type="button" onclick="togglePassword('login-password','login-eye')"
-                                style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#8b9ab0; padding:0; display:flex; align-items:center;"
-                                tabindex="-1">
-                            <svg id="login-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <button type="button" onclick="togglePassword('pass2','eye2')"
+                                style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#8b9ab0; padding:0; display:flex; align-items:center;" tabindex="-1">
+                            <svg id="eye2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                             </svg>
                         </button>
                     </div>
                 </div>
 
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem;">
-                    <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.85rem; color:#8b9ab0;">
-                        <input type="checkbox" name="remember" style="accent-color:#00d4ff; width:15px; height:15px;">
-                        Remember me
-                    </label>
-                    <a href="{{ route('password.forgot') }}" style="font-size:0.85rem; color:#00d4ff; text-decoration:none; font-weight:500;">
-                        Forgot password?
-                    </a>
-                </div>
-
                 <button type="submit" class="btn-primary" style="width:100%; padding:0.75rem; font-size:0.95rem;">
-                    Sign In
+                    Reset Password
                 </button>
             </form>
 
-            {{-- Footer --}}
             <p style="text-align:center; margin-top:1.5rem; font-size:0.875rem; color:#8b9ab0;">
-                Don't have an account?
-                <a href="{{ route('register') }}" style="color:#00d4ff; text-decoration:none; font-weight:500;">
-                    Create one
-                </a>
+                <a href="{{ route('login') }}" style="color:#00d4ff; text-decoration:none; font-weight:500;">← Back to Sign In</a>
             </p>
 
         </div>
-
-        {{-- Demo credentials hint --}}
-        <div style="margin-top:1rem; background:#7c3aed11; border:1px solid #7c3aed33; border-radius:10px; padding:0.85rem 1rem; font-size:0.8rem; color:#a78bfa; text-align:center;">
-            <strong>Admin:</strong> admin@taskmanager.com / admin123
-        </div>
-
     </div>
 </div>
 @push('scripts')
@@ -102,5 +94,4 @@ function togglePassword(inputId, eyeId) {
 }
 </script>
 @endpush
-
 @endsection
