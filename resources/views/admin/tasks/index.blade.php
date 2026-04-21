@@ -14,45 +14,83 @@
     </div>
 
     {{-- Search + Filters --}}
-    <form method="GET" action="{{ route('admin.tasks.index') }}" class="mb-6">
-        <div class="flex flex-wrap gap-3">
-            {{-- Search --}}
-            <div class="relative flex-1 min-w-48">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none"
-                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                </svg>
-                <input type="text" name="search" value="{{ $search }}"
-                       class="input-dark w-full pl-9" placeholder="Search title, description, assignee…">
-            </div>
+    <form method="GET" action="{{ route('admin.tasks.index') }}">
+        <div class="glass-card p-3 sm:p-4 mb-6">
 
-            {{-- Status filter --}}
-            <select name="status" onchange="this.form.submit()"
-                    class="input-dark cursor-pointer" style="width:auto; min-width:130px;">
-                <option value="">All Status</option>
-                @foreach(['pending' => 'Pending', 'in_progress' => 'In Progress', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $val => $label)
-                <option value="{{ $val }}" {{ $status === $val ? 'selected' : '' }}>{{ $label }}</option>
-                @endforeach
-            </select>
-
-            {{-- Priority filter --}}
-            <select name="priority" onchange="this.form.submit()"
-                    class="input-dark cursor-pointer" style="width:auto; min-width:130px;">
-                <option value="">All Priority</option>
-                @foreach(['low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'urgent' => 'Urgent'] as $val => $label)
-                <option value="{{ $val }}" {{ $priority === $val ? 'selected' : '' }}>{{ $label }}</option>
-                @endforeach
-            </select>
-
-            {{-- Search button --}}
-            <button type="submit" class="btn-primary text-sm px-4">Search</button>
-
+            {{-- Active filter badges --}}
             @if($search || $status || $priority)
-            <a href="{{ route('admin.tasks.index') }}"
-               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm text-slate-400 border border-slate-700 hover:text-slate-200 hover:border-slate-500 transition-all no-underline">
-                ✕ Clear
-            </a>
+            <div class="flex flex-wrap gap-2 mb-3">
+                @if($search)
+                <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/30 text-cyan-400">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    "{{ $search }}"
+                </span>
+                @endif
+                @if($status)
+                <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-violet-400/10 border border-violet-400/30 text-violet-400">
+                    Status: {{ ucfirst(str_replace('_',' ',$status)) }}
+                </span>
+                @endif
+                @if($priority)
+                <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400">
+                    Priority: {{ ucfirst($priority) }}
+                </span>
+                @endif
+            </div>
             @endif
+
+            {{-- Desktop: single row | Mobile: stacked --}}
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center">
+
+                {{-- Search input --}}
+                <div class="relative flex-1">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none"
+                         fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input type="text" name="search" value="{{ $search }}"
+                           class="input-dark w-full pl-9 pr-3"
+                           placeholder="Search tasks, assignee…">
+                </div>
+
+                {{-- Dropdowns + Buttons row --}}
+                <div class="flex gap-2 flex-wrap sm:flex-nowrap sm:items-center">
+
+                    <select name="status" onchange="this.form.submit()"
+                            class="input-dark cursor-pointer flex-1 sm:flex-none sm:w-36">
+                        <option value="">All Status</option>
+                        @foreach(['pending'=>'Pending','in_progress'=>'In Progress','completed'=>'Completed','cancelled'=>'Cancelled'] as $val=>$label)
+                        <option value="{{ $val }}" {{ $status===$val?'selected':'' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+
+                    <select name="priority" onchange="this.form.submit()"
+                            class="input-dark cursor-pointer flex-1 sm:flex-none sm:w-36">
+                        <option value="">All Priority</option>
+                        @foreach(['low'=>'Low','medium'=>'Medium','high'=>'High','urgent'=>'Urgent'] as $val=>$label)
+                        <option value="{{ $val }}" {{ $priority===$val?'selected':'' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit"
+                            class="flex-shrink-0 inline-flex items-center gap-1.5 btn-primary text-sm px-4 py-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        Search
+                    </button>
+
+                    @if($search || $status || $priority)
+                    <a href="{{ route('admin.tasks.index') }}"
+                       class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-slate-400 border border-slate-700 hover:text-slate-200 hover:border-slate-500 transition-all no-underline">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                        Clear
+                    </a>
+                    @endif
+                </div>
+            </div>
         </div>
     </form>
 
@@ -75,32 +113,57 @@
     @else
     <div class="flex flex-col gap-3">
         @foreach($tasks as $task)
-        <div class="glass-card p-4 sm:p-5 hover:border-slate-600 transition-all duration-200 overflow-hidden">
-            <div class="flex items-start gap-4">
+        @php
+            $dot = match($task->priority) {
+                'urgent' => 'bg-red-400',
+                'high'   => 'bg-orange-400',
+                'medium' => 'bg-yellow-400',
+                default  => 'bg-slate-500',
+            };
+        @endphp
+        <div class="glass-card p-4 sm:p-5 hover:border-slate-600 transition-all duration-200">
 
+            <div class="flex items-start gap-3">
                 {{-- Priority dot --}}
-                @php
-                    $dot = match($task->priority) {
-                        'urgent' => 'bg-red-400',
-                        'high'   => 'bg-orange-400',
-                        'medium' => 'bg-yellow-400',
-                        default  => 'bg-slate-500',
-                    };
-                @endphp
                 <span class="mt-1.5 block w-2.5 h-2.5 rounded-full flex-shrink-0 {{ $dot }}"></span>
 
-                {{-- Content --}}
+                {{-- All content --}}
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 flex-wrap mb-1">
-                        <h3 class="font-semibold text-slate-100 text-sm truncate">{{ $task->title }}</h3>
-                        @if($task->isOverdue())
-                            <span class="text-xs font-medium text-red-400 bg-red-400/10 border border-red-400/30 px-2 py-0.5 rounded-full">Overdue</span>
-                        @endif
+
+                    {{-- Top row: title + status badges --}}
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h3 class="font-semibold text-slate-100 text-sm">{{ $task->title }}</h3>
+                                @if($task->isOverdue())
+                                    <span class="text-xs font-medium text-red-400 bg-red-400/10 border border-red-400/30 px-2 py-0.5 rounded-full flex-shrink-0">Overdue</span>
+                                @endif
+                            </div>
+                        </div>
+                        {{-- Badges (top right, always visible) --}}
+                        <div class="flex items-center gap-1.5 flex-shrink-0">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded-full border {{ \App\Models\Task::priorityColor($task->priority) }}">
+                                {{ ucfirst($task->priority) }}
+                            </span>
+                            <span class="hidden sm:inline text-xs font-semibold px-2 py-0.5 rounded-full border {{ \App\Models\Task::statusColor($task->status) }}">
+                                {{ \App\Models\Task::statusLabel($task->status) }}
+                            </span>
+                        </div>
                     </div>
+
+                    {{-- Status badge on mobile --}}
+                    <div class="sm:hidden mb-2">
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full border {{ \App\Models\Task::statusColor($task->status) }}">
+                            {{ \App\Models\Task::statusLabel($task->status) }}
+                        </span>
+                    </div>
+
                     @if($task->description)
                     <p class="text-slate-500 text-xs leading-relaxed mb-2 line-clamp-1">{{ $task->description }}</p>
                     @endif
-                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+
+                    {{-- Meta info --}}
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 mb-3">
                         <div class="flex items-center gap-1.5">
                             <div class="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white font-bold text-[10px] overflow-hidden flex-shrink-0">
                                 @if($task->assignee?->profile_image)
@@ -126,28 +189,19 @@
                         </a>
                         @endif
                     </div>
-                </div>
 
-                {{-- Badges + Actions --}}
-                <div class="flex sm:flex-col items-center sm:items-end gap-2 flex-shrink-0 flex-wrap">
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full border {{ \App\Models\Task::priorityColor($task->priority) }}">
-                            {{ ucfirst($task->priority) }}
-                        </span>
-                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full border {{ \App\Models\Task::statusColor($task->status) }}">
-                            {{ \App\Models\Task::statusLabel($task->status) }}
-                        </span>
-                    </div>
+                    {{-- Action buttons (bottom, full-width friendly) --}}
                     <div class="flex items-center gap-2">
                         <a href="{{ route('admin.tasks.edit', $task) }}"
-                           class="text-xs px-2.5 py-1 rounded-md border border-cyan-400/30 bg-cyan-400/8 text-cyan-400 hover:bg-cyan-400/20 transition-all no-underline">Edit</a>
+                           class="text-xs px-3 py-1.5 rounded-md border border-cyan-400/30 bg-cyan-400/8 text-cyan-400 hover:bg-cyan-400/20 transition-all no-underline">Edit</a>
                         <form method="POST" action="{{ route('admin.tasks.destroy', $task) }}"
                               onsubmit="return confirm('Delete this task?')">
                             @csrf @method('DELETE')
                             <button type="submit"
-                                class="text-xs px-2.5 py-1 rounded-md border border-red-400/30 bg-red-400/8 text-red-400 hover:bg-red-400/20 transition-all cursor-pointer">Delete</button>
+                                class="text-xs px-3 py-1.5 rounded-md border border-red-400/30 bg-red-400/8 text-red-400 hover:bg-red-400/20 transition-all cursor-pointer">Delete</button>
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -156,7 +210,7 @@
 
     {{-- Pagination --}}
     @if($tasks->hasPages())
-    <div class="mt-2 flex items-center justify-between">
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-2">
         <p class="text-xs text-slate-500">
             Showing {{ $tasks->firstItem() }}–{{ $tasks->lastItem() }} of {{ $tasks->total() }} tasks
         </p>
