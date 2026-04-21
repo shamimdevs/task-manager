@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TaskAssignedMail;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
@@ -61,13 +63,15 @@ class TaskController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($request) {
+            $task = null;
+
+            DB::transaction(function () use ($request, &$task) {
                 $attachmentPath = null;
                 if ($request->hasFile('attachment')) {
                     $attachmentPath = $request->file('attachment')->store('task-attachments', 'public');
                 }
 
-                Task::create([
+                $task = Task::create([
                     'created_by'  => Auth::id(),
                     'assigned_to' => $request->assigned_to,
                     'title'       => $request->title,
@@ -79,6 +83,11 @@ class TaskController extends Controller
                     'attachment'  => $attachmentPath,
                 ]);
             });
+
+            if ($request->boolean('send_mail')) {
+                $task->load(['assignee', 'creator']);
+                Mail::to($task->assignee->email)->send(new TaskAssignedMail($task, $task->assignee));
+            }
 
             return redirect()->route('admin.tasks.index')->with('success', 'Task created successfully.');
         } catch (\Exception $e) {
@@ -110,6 +119,8 @@ class TaskController extends Controller
         ]);
 
         try {
+            $wasReassigned = (int) $task->assigned_to !== (int) $request->assigned_to;
+
             DB::transaction(function () use ($request, $task) {
                 $data = [
                     'assigned_to' => $request->assigned_to,
@@ -130,6 +141,11 @@ class TaskController extends Controller
 
                 $task->update($data);
             });
+
+            if ($wasReassigned) {
+                $task->load(['assignee', 'creator']);
+                Mail::to($task->assignee->email)->send(new TaskAssignedMail($task, $task->assignee));
+            }
 
             return redirect()->route('admin.tasks.index')->with('success', 'Task updated successfully.');
         } catch (\Exception $e) {

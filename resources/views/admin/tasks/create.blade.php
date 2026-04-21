@@ -104,6 +104,26 @@
                     </label>
                 </div>
 
+                {{-- Email Notification Toggle --}}
+                <div class="flex items-center justify-between bg-white/5 border border-slate-700/60 rounded-xl px-4 py-3">
+                    <div>
+                        <p class="text-sm font-medium text-slate-300">Notify assignee via email</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Send a task assignment email to the selected user</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer ml-4 flex-shrink-0">
+                        <input type="checkbox" name="send_mail" value="1" class="sr-only peer" checked>
+                        <div class="w-11 h-6 rounded-full peer
+                                    bg-slate-700
+                                    peer-checked:bg-gradient-to-r peer-checked:from-cyan-500 peer-checked:to-violet-600
+                                    after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                    after:bg-white after:rounded-full after:h-5 after:w-5
+                                    after:transition-all after:duration-200
+                                    peer-checked:after:translate-x-5
+                                    transition-all duration-200">
+                        </div>
+                    </label>
+                </div>
+
                 <button type="submit" class="btn-primary w-full mt-1">Create Task</button>
             </div>
         </form>

@@ -36,6 +36,7 @@ Task Manager is a multi-role web application where **Admins** can create and ass
 ### Admin Panel
 - **User Management** — Create, edit, activate/deactivate users; view per-user task reports
 - **Task Management** — Create, edit, delete tasks; assign to any user; set priority, status, due date
+- **Task Assignment Email** — Automatically sends a styled HTML email to the assigned user on task creation; toggle on/off per task via a UI switch
 - **Dashboard** — System-wide stats (total tasks, in-progress, completed, total users) + recent task feed
 - **Reports** — Full task breakdown by status & priority, per-user stats table, overdue tracking
 
@@ -45,6 +46,14 @@ Task Manager is a multi-role web application where **Admins** can create and ass
 - **Dashboard** — Personal stats (my tasks, pending, in-progress, completed) + recent task feed
 - **Profile** — Update name, email, designation, profile image, password
 - **Reports** — Personal task breakdown with completion rate
+
+### Email Notifications
+- Styled HTML email sent to the assignee whenever a task is created
+- Email includes task title, status badge, priority badge, due date, assigned-by name, and description
+- Toggle switch on the create task form — admin can disable the notification per task
+- Also triggers on task reassignment (when `assigned_to` changes during edit)
+- Uses Laravel `Mailable` (`App\Mail\TaskAssignedMail`) with a dedicated Blade template (`emails/task-assigned`)
+- Compatible with any SMTP provider (Gmail, Mailtrap, etc.)
 
 ### UX & Design
 - 100% responsive across all screen sizes (mobile, tablet, desktop)
