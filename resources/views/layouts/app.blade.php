@@ -34,12 +34,55 @@
                        onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color='#8b9ab0'">
                         Dashboard
                     </a>
-                    <form method="POST" action="{{ url('/logout') }}" style="margin:0;">
-                        @csrf
-                        <button type="submit" class="btn-secondary" style="font-size:0.85rem; padding:0.4rem 1rem;">
-                            Logout
+                    @if(auth()->user()->isAdmin())
+                    <a href="{{ route('admin.users.index') }}" style="color:#8b9ab0; text-decoration:none; font-size:0.9rem; transition:color 0.2s;"
+                       onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color='#8b9ab0'">
+                        Users
+                    </a>
+                    @endif
+
+                    {{-- Profile dropdown --}}
+                    <div style="position:relative;" id="profileMenu">
+                        <button onclick="document.getElementById('profileDropdown').classList.toggle('hidden')"
+                                style="display:flex; align-items:center; gap:0.5rem; background:none; border:none; cursor:pointer; color:#e2e8f0; font-size:0.9rem; padding:0.25rem 0.5rem; border-radius:8px; transition:background 0.2s;"
+                                onmouseover="this.style.background='rgba(255,255,255,0.05)'"
+                                onmouseout="this.style.background='none'">
+                            <div style="width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#00d4ff,#7c3aed); display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; color:#fff; flex-shrink:0; overflow:hidden;">
+                                @if(auth()->user()->profile_image)
+                                    <img src="{{ Storage::url(auth()->user()->profile_image) }}" alt="" style="width:100%; height:100%; object-fit:cover;">
+                                @else
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                @endif
+                            </div>
+                            <span style="max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->name }}</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                         </button>
-                    </form>
+
+                        <div id="profileDropdown" class="hidden" style="position:absolute; right:0; top:calc(100% + 0.5rem); background:#0d1117; border:1px solid #1e2433; border-radius:10px; min-width:160px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.4); z-index:100;">
+                            <a href="{{ route('profile') }}" style="display:block; padding:0.65rem 1rem; color:#8b9ab0; text-decoration:none; font-size:0.875rem; transition:all 0.15s;"
+                               onmouseover="this.style.background='rgba(255,255,255,0.04)'; this.style.color='#e2e8f0'"
+                               onmouseout="this.style.background='transparent'; this.style.color='#8b9ab0'">
+                                My Profile
+                            </a>
+                            <div style="height:1px; background:#1e2433;"></div>
+                            <form method="POST" action="{{ url('/logout') }}" style="margin:0;">
+                                @csrf
+                                <button type="submit" style="display:block; width:100%; padding:0.65rem 1rem; color:#ef4444; background:none; border:none; text-align:left; font-size:0.875rem; cursor:pointer; transition:all 0.15s;"
+                                        onmouseover="this.style.background='rgba(239,68,68,0.08)'"
+                                        onmouseout="this.style.background='transparent'">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <script>
+                        document.addEventListener('click', function(e) {
+                            const menu = document.getElementById('profileMenu');
+                            if (menu && !menu.contains(e.target)) {
+                                document.getElementById('profileDropdown').classList.add('hidden');
+                            }
+                        });
+                    </script>
                 @else
                     <a href="{{ url('/login') }}" style="color:#8b9ab0; text-decoration:none; font-size:0.9rem;"
                        onmouseover="this.style.color='#00d4ff'" onmouseout="this.style.color='#8b9ab0'">

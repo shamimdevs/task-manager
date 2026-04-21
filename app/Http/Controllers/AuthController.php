@@ -27,6 +27,7 @@ class AuthController extends Controller
             'email'    => $request->email,
             'password' => $request->password,
             'role'     => 'user',
+            'status'   => 'active',
         ]);
 
         Auth::login($user);
@@ -48,6 +49,10 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            if (!Auth::user()->isActive()) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Your account has been deactivated. Please contact admin.'])->withInput();
+            }
             $request->session()->regenerate();
             return redirect()->route('dashboard')->with('success', 'Welcome back, ' . Auth::user()->name . '!');
         }

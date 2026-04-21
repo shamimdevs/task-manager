@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public ────────────────────────────────────────────────────
@@ -20,4 +22,13 @@ Route::middleware('guest.custom')->group(function () {
 Route::middleware('auth.custom')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+// ── Admin only ────────────────────────────────────────────────
+Route::middleware(['auth.custom', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('users', UserController::class)->except(['show']);
+    Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
 });

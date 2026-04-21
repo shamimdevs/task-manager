@@ -14,6 +14,11 @@ class AuthenticateMiddleware
             return redirect()->route('login')->with('error', 'Please login to continue.');
         }
 
+        if (!Auth::user()->isActive()) {
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'Your account has been deactivated. Please contact admin.');
+        }
+
         return $next($request);
     }
 }
