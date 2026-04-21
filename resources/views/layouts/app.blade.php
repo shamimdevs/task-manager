@@ -46,6 +46,8 @@
                            class="px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all no-underline">Users</a>
                         <a href="{{ route('admin.report') }}"
                            class="px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all no-underline">Report</a>
+                        <a href="{{ route('admin.leaderboard') }}"
+                           class="px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all no-underline">Leaderboard</a>
                     @else
                         <a href="{{ route('my-tasks.index') }}"
                            class="px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all no-underline">My Tasks</a>
@@ -182,6 +184,11 @@
                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all no-underline">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
                             Report
+                        </a>
+                        <a href="{{ route('admin.leaderboard') }}"
+                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all no-underline">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l4-4 4 4M6 10h12M4 14h16M2 18h20"/></svg>
+                            Leaderboard
                         </a>
                     @else
                         <a href="{{ route('my-tasks.index') }}"

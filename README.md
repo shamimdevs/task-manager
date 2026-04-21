@@ -37,6 +37,7 @@ Task Manager is a multi-role web application where **Admins** can create and ass
 - **User Management** — Create, edit, activate/deactivate users; view per-user task reports
 - **Task Management** — Create, edit, delete tasks; assign to any user; set priority, status, due date
 - **Task Assignment Email** — Automatically sends a styled HTML email to the assigned user on task creation; toggle on/off per task via a UI switch
+- **User Leaderboard** — Ranked table of users by task completion with podium for top 3, stats summary, and pagination
 - **Dashboard** — System-wide stats (total tasks, in-progress, completed, total users) + recent task feed
 - **Reports** — Full task breakdown by status & priority, per-user stats table, overdue tracking
 
@@ -55,11 +56,22 @@ Task Manager is a multi-role web application where **Admins** can create and ass
 - Uses Laravel `Mailable` (`App\Mail\TaskAssignedMail`) with a dedicated Blade template (`emails/task-assigned`)
 - Compatible with any SMTP provider (Gmail, Mailtrap, etc.)
 
+### User Leaderboard
+- Ranks all active users by completed tasks and overall completion rate
+- **Top 3 podium** — 🥇🥈🥉 cards with colored avatar rings and glowing borders, ordered 2nd–1st–3rd for visual depth
+- **Summary stats bar** — total ranked users, top performer's completions, average completion rate
+- **Full rankings table** — rank medal, user avatar, completed / active / pending / total counts, animated gradient progress bar, color-coded rate
+- **Paginated** — 10 users per page with item range indicator
+- **Auto-generated daily at midnight** via Laravel scheduler (`leaderboard:generate` artisan command)
+- **Manual generation** — admin can regenerate anytime via "Generate Now" button on the page
+- Stored as snapshots in `leaderboard_snapshots` table; regeneration replaces the previous data
+
 ### UX & Design
 - 100% responsive across all screen sizes (mobile, tablet, desktop)
 - Dark glassmorphism UI with cyan/violet gradient theme
 - Global loading overlay on all form submissions
 - Active filter badges on search/filter forms
+- Date picker icon styled to match dark theme (cyan tint)
 - SVG favicon
 
 ---
@@ -146,6 +158,21 @@ Task Manager is a multi-role web application where **Admins** can create and ass
 | due_date | date nullable | |
 | order | integer | For sorting |
 | attachment | varchar nullable | |
+| created_at / updated_at | timestamp | |
+
+### `leaderboard_snapshots`
+| Column | Type | Notes |
+|---|---|---|
+| id | bigint PK | |
+| user_id | FK → users.id | |
+| rank | tinyint | Position in rankings |
+| completed_tasks | int | |
+| in_progress_tasks | int | |
+| pending_tasks | int | |
+| cancelled_tasks | int | |
+| total_tasks | int | |
+| completion_rate | decimal(5,2) | Percentage |
+| generated_at | timestamp | When this snapshot was created |
 | created_at / updated_at | timestamp | |
 
 ### `password_reset_tokens`
@@ -249,6 +276,8 @@ php artisan test
 php artisan test tests/Unit/TaskModelTest.php
 php artisan test tests/Feature/AdminTaskTest.php
 php artisan test tests/Feature/MyTaskTest.php
+php artisan test tests/Feature/LeaderboardTest.php
+php artisan test tests/Feature/TaskAssignedMailTest.php
 ```
 
 ### Run a Single Test Method
@@ -270,13 +299,15 @@ php artisan test tests/Feature      # Feature tests only
 ### Test Results
 
 ```
-PASS  Tests\Unit\TaskModelTest        15 tests
-PASS  Tests\Feature\AdminTaskTest     19 tests
-PASS  Tests\Feature\MyTaskTest        10 tests
-PASS  Tests\Feature\ExampleTest        1 test
-PASS  Tests\Unit\ExampleTest           1 test
+PASS  Tests\Unit\TaskModelTest              15 tests
+PASS  Tests\Feature\AdminTaskTest           19 tests
+PASS  Tests\Feature\MyTaskTest              10 tests
+PASS  Tests\Feature\LeaderboardTest         16 tests
+PASS  Tests\Feature\TaskAssignedMailTest     9 tests
+PASS  Tests\Feature\ExampleTest              1 test
+PASS  Tests\Unit\ExampleTest                 1 test
 
-Tests: 46 passed (93 assertions)  Duration: ~3.7s
+Tests: 70 passed (137 assertions)  Duration: ~2.7s
 ```
 
 ### Test Coverage Details
@@ -320,6 +351,25 @@ Tests: 46 passed (93 assertions)  Duration: ~3.7s
 | Search & Filter | Filter by status; search by title |
 | Status Updates | Mark as in_progress; mark as completed; cannot update another user's task; invalid status rejected; guest blocked |
 
+**`tests/Feature/LeaderboardTest.php` — 16 tests**
+
+| Group | Tests |
+|---|---|
+| Access Control | Guest → redirect login; regular user → 403; admin → 200; inactive admin → redirect login |
+| Generate Access | Guest blocked; regular user blocked with 403 |
+| Empty State | View renders correctly with no snapshot data |
+| Generate | Creates snapshot in DB; correct task counts (completed, in-progress, pending, total, rate); ranks users by completed tasks; replaces previous snapshot on re-run; excludes inactive users |
+| View Data | All view variables passed (entries, top3, generatedAt, totalUsers, avgRate) |
+| Pagination | 10 per page; correct total; page 2 returns remaining items |
+
+**`tests/Feature/TaskAssignedMailTest.php` — 9 tests**
+
+| Group | Tests |
+|---|---|
+| Toggle ON | Email sent; sent to correct assignee; contains correct task data; exactly one mail per creation |
+| Toggle OFF | Email not sent when toggle is `0`; email not sent when toggle is absent |
+| Reassignment | Email sent when `assigned_to` changes; not sent when assignee unchanged; new assignee receives mail, old does not |
+
 ---
 
 ## Project Structure
@@ -327,21 +377,28 @@ Tests: 46 passed (93 assertions)  Duration: ~3.7s
 ```
 task-manager/
 ├── app/
+│   ├── Console/Commands/
+│   │   └── GenerateLeaderboard.php         # Artisan command: ranks users, writes snapshot
 │   ├── Http/
 │   │   ├── Controllers/
 │   │   │   ├── AuthController.php          # Register, Login, Logout
 │   │   │   ├── DashboardController.php     # Role-based dashboard stats
+│   │   │   ├── LeaderboardController.php   # Leaderboard view + manual generate
 │   │   │   ├── MyTaskController.php        # User's own task view & status update
 │   │   │   ├── PasswordResetController.php # Forgot/reset password flow
 │   │   │   ├── ProfileController.php       # Profile view & update
 │   │   │   ├── ReportController.php        # Admin & user reports
-│   │   │   ├── TaskController.php          # Admin task CRUD
+│   │   │   ├── TaskController.php          # Admin task CRUD + email on assign
 │   │   │   └── UserController.php          # Admin user management
 │   │   └── Middleware/
 │   │       ├── AdminMiddleware.php         # Blocks non-admins (403)
 │   │       ├── AuthenticateMiddleware.php  # Blocks guests & inactive users
 │   │       └── GuestMiddleware.php         # Redirects authenticated users
+│   ├── Mail/
+│   │   ├── PasswordResetMail.php           # Password reset email
+│   │   └── TaskAssignedMail.php            # Task assignment notification email
 │   └── Models/
+│       ├── LeaderboardSnapshot.php         # Leaderboard snapshot model
 │       ├── Task.php                        # Task model with helpers & relationships
 │       └── User.php                        # User model with role/status helpers
 ├── database/
@@ -351,25 +408,34 @@ task-manager/
 │   └── migrations/
 │       ├── ..._create_users_table.php
 │       ├── ..._create_tasks_table.php
-│       └── ..._create_password_reset_tokens_table.php
+│       ├── ..._create_password_reset_tokens_table.php
+│       └── ..._create_leaderboard_snapshots_table.php
 ├── resources/views/
 │   ├── layouts/app.blade.php               # Main layout: nav, loading overlay, favicon
 │   ├── welcome.blade.php                   # Landing page
 │   ├── dashboard.blade.php                 # Role-aware dashboard
 │   ├── report.blade.php                    # User report page
 │   ├── auth/                               # Login, register, forgot/reset password
+│   ├── emails/
+│   │   ├── password-reset.blade.php        # Password reset HTML email
+│   │   └── task-assigned.blade.php         # Task assignment HTML email
 │   ├── profile/                            # Profile edit page
 │   ├── tasks/                              # My Tasks page (user view)
 │   └── admin/
+│       ├── leaderboard.blade.php           # Leaderboard page with podium + table
 │       ├── tasks/                          # Admin task CRUD views
 │       ├── users/                          # Admin user CRUD views
 │       └── report.blade.php               # Admin report page
-├── routes/web.php                          # All application routes
+├── routes/
+│   ├── web.php                             # All application routes
+│   └── console.php                         # Scheduler: leaderboard:generate daily at 00:00
 ├── tests/
 │   ├── Unit/TaskModelTest.php              # 15 unit tests
 │   └── Feature/
 │       ├── AdminTaskTest.php               # 19 feature tests
-│       └── MyTaskTest.php                  # 10 feature tests
+│       ├── LeaderboardTest.php             # 16 feature tests
+│       ├── MyTaskTest.php                  # 10 feature tests
+│       └── TaskAssignedMailTest.php         # 9 feature tests
 ├── public/favicon.svg                      # SVG favicon
 └── phpunit.xml                             # SQLite in-memory test config
 ```
@@ -389,6 +455,7 @@ task-manager/
 | Admin — Task CRUD | ❌ | ❌ | ✅ |
 | Admin — User Management | ❌ | ❌ | ✅ |
 | Admin — System Report | ❌ | ❌ | ✅ |
+| Admin — Leaderboard | ❌ | ❌ | ✅ |
 
 ---
 

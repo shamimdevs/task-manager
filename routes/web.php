@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\MyTaskController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileController;
@@ -49,4 +50,7 @@ Route::middleware(['auth.custom', 'admin'])->prefix('admin')->name('admin.')->gr
 
     Route::resource('tasks', TaskController::class)->except(['show']);
     Route::get('report', [ReportController::class, 'adminReport'])->name('report');
+
+    Route::get('leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+    Route::post('leaderboard/generate', [LeaderboardController::class, 'generate'])->name('leaderboard.generate');
 });
