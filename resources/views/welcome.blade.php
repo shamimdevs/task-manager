@@ -33,6 +33,7 @@
         </p>
 
         {{-- CTA Buttons --}}
+        @guest
         <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
             <a href="{{ url('/register') }}" class="btn-primary" style="text-decoration:none; font-size:1rem; padding:0.75rem 2rem;">
                 Get Started Free
@@ -41,6 +42,12 @@
                 Sign In
             </a>
         </div>
+        @endguest
+        @auth
+        <a href="{{ url('/dashboard') }}" class="btn-primary" style="text-decoration:none; font-size:1rem; padding:0.75rem 2rem;">
+            Go to Dashboard →
+        </a>
+        @endauth
 
         {{-- Feature pills --}}
         <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap; margin-top:3rem;">
