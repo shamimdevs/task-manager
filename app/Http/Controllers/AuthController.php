@@ -48,7 +48,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        if (Auth::attempt($request->only('email', 'password'))) {
             if (!Auth::user()->isActive()) {
                 Auth::logout();
                 return back()->withErrors(['email' => 'Your account has been deactivated. Please contact admin.'])->withInput();

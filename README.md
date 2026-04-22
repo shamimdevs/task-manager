@@ -1,8 +1,12 @@
 # Task Manager
+L
 
 A full-featured Task Management System built with **Laravel 13** and **Tailwind CSS v4**, developed as a technical assessment for **Qtec Solution Limited**.
 
 ---
+🌐 Live Demo
+
+👉 https://task-manager.solvexbd.com/
 
 ## Table of Contents
 
